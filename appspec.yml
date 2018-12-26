@@ -1,0 +1,19 @@
+version: 0.0
+os: linux
+files:
+  - source: index.html
+    destination: /var/www/html
+hooks:
+  ApplicationStop:
+    - location: deregister_from_elb.sh
+      runas: root
+    - location: stop_httpd.sh
+      runas: root
+  ApplicationStart:
+    - location: scripts/install_dependencies
+      timeout: 300
+      runas: root
+    - location: start_httpd.sh
+      runas: root
+    - location: register_with_elb.sh
+      runas: root
